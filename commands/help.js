@@ -1,19 +1,27 @@
-// help.js
 const fs = require('fs')
 const path = require('path')
+const commands = require('../main')
 module.exports = {
     command: 'help',
     description: 'show the list of available commands',
     requiresEntity: false,
     author: 'me, myself, and irene',
     execute: function(sender, command, args) {
-      // load all the commands from the commands folder
       const commands = {}
-      fs.readdirSync(path.join(__dirname)).forEach(file => {
-        const command = require(path.join(__dirname, file))
-        commands[command.command] = command
-      })
-      // loop through all the commands and print their descriptions
+      function readFiles(dir) {
+        const files = fs.readdirSync(dir)
+        for (const file of files) {
+          const filePath = path.join(dir, file)
+          const stats = fs.statSync(filePath)
+          if (stats.isFile()) {
+            const command = require(filePath)
+            commands[command.command] = command
+          } else if (stats.isDirectory()) {
+            readFiles(filePath)
+          }
+        }
+      }
+      readFiles(path.join(__dirname))
       for (const cmd in commands) {
         console.log(`.${cmd} - ${commands[cmd].description}`)
       }
