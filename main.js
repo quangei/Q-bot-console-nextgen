@@ -4,8 +4,8 @@ const fs = require('fs')
 const path = require('path')
 
 const bot = mineflayer.createBot({
-  host: '192.168.1.10',
-  port: 60632,
+  host: 'localhost',
+  port: 25565,
   username: 'Bot',
   version: '1.18.2'
 })
